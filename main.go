@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
@@ -11,8 +12,19 @@ import (
 )
 
 func main() {
-	ec := tc.New()
-	reader := bufio.NewReader(os.Stdin)
+	if len(os.Args) < 2 {
+		handle_file(os.Stdin)
+	} else {
+		if file, err := os.Open(os.Args[1]); err == nil {
+			handle_file(file)
+		} else {
+			log.Println(err)
+		}
+	}
+}
+
+func handle_file(fh *os.File) {
+	reader := bufio.NewReader(fh)
 	var line string
 	var err error
 
@@ -20,9 +32,9 @@ func main() {
 		if line, err = reader.ReadString('\n'); err != nil {
 			break
 		}
-		line = strings.TrimSpace(line)
+		line = strings.TrimSuffix(line, "\n")
 
 		cf := parse.ParseHex(line)
-		fmt.Println(ec.Colored_line(cf))
+		fmt.Println(tc.Colored_line(cf))
 	}
 }

@@ -9,9 +9,16 @@ import (
 
 	"gitlab.com/jiaoshijie/tcolors/parse"
 	tc "gitlab.com/jiaoshijie/tcolors/true_colors"
+
+	"golang.org/x/term"
 )
 
 func main() {
+	if !term.IsTerminal(int(os.Stdout.Fd())) {
+		log.Println("Please run `tcolors` in an interactive terminal")
+		return
+	}
+
 	if len(os.Args) < 2 {
 		handle_file(os.Stdin)
 	} else {

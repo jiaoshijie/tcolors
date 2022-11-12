@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 
+	"gitlab.com/jiaoshijie/tcolors/colors"
 	"gitlab.com/jiaoshijie/tcolors/parse"
 	tc "gitlab.com/jiaoshijie/tcolors/true_colors"
 
@@ -22,10 +23,33 @@ func main() {
 	if len(os.Args) < 2 {
 		handle_file(os.Stdin)
 	} else {
-		if file, err := os.Open(os.Args[1]); err == nil {
-			handle_file(file)
-		} else {
-			log.Println(err)
+		switch os.Args[1] {
+		case "help":
+			fmt.Println("tcolors [8c|256c|`file_name`]")
+		case "8colors", "8c":
+			colors.Show_8colors()
+		case "256colors", "256c":
+			if w, _, err := term.GetSize(int(os.Stdout.Fd())); err == nil {
+				if w < 180 {
+					log.Printf("Terminal size is %v, for printing 256 colors terminal width must greater then 180\n", w)
+				} else {
+					colors.Show_256colors()
+				}
+			} else {
+				log.Println(err.Error())
+			}
+		case "--":
+			if file, err := os.Open(os.Args[2]); err == nil {
+				handle_file(file)
+			} else {
+				log.Println(err)
+			}
+		default:
+			if file, err := os.Open(os.Args[1]); err == nil {
+				handle_file(file)
+			} else {
+				log.Println(err)
+			}
 		}
 	}
 }

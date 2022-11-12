@@ -2,53 +2,56 @@ package colors
 
 import (
 	"fmt"
-	"log"
-	"strings"
 )
 
-var g_base int = 30
-var g_reset string = "\033[0m"
-var g_x string = "\033[0m"
-var g_8colors map[string]int = map[string]int{
-	"black":   0,
-	"red":     1,
-	"green":   2,
-	"yellow":  3,
-	"blue":    4,
-	"magenta": 5,
-	"cyan":    6,
-	"white":   7,
-}
+var x string = "\033[0m"
 
-func Scolor(color string, str string, opt ...bool) string {
-	// opt[0] -> bright
-	// opt[1] -> background
-	c_index, ok := g_8colors[strings.ToLower(color)]
-	if !ok {
-		log.Printf("%v is not in 8 colors.\n", color)
-		return str
-	}
-	cn := g_base + c_index
-	if len(opt) > 0 && opt[0] {
-		cn += 60
-	}
-	if len(opt) > 1 && opt[1] {
-		cn += 10
-	}
-	return fmt.Sprintf("%v%v%v", fc(cn), str, g_x)
-}
-
-func fc(cn int) string {
+func fc8(cn int) string {
 	return fmt.Sprintf("\033[%vm", cn)
 }
 
-func Show_all_colors() {
-	fmt.Println("dark colors:")
-	for i := 0; i < 8; i++ {
-		fmt.Printf("\t%v\\033[%vm%v\n", fc(g_base+i), g_base+i, g_x)
+func fc(cn int, bg bool) string {
+	if bg {
+		return fmt.Sprintf("\033[48;5;%vm", cn)
 	}
-	fmt.Println("bright colors:")
-	for i := 0; i < 8; i++ {
-		fmt.Printf("\t%v\\033[%vm%v\n", fc(g_base+i+60), g_base+i+60, g_x)
+	return fmt.Sprintf("\033[38;5;%vm", cn)
+}
+
+func Show_8colors() {
+	fmt.Println("  dark     bright")
+	fmt.Printf("%v%v color%-2v%v %v%v color%-2v %v\n", fc8(37), fc8(40), 0, x, fc8(37), fc8(100), 8, x)
+	for i := 1; i < 8; i++ {
+		fmt.Printf("%v%v color%-2v%v %v%v color%-2v %v\n", fc8(30), fc8(40+i), i, x, fc8(30), fc8(100+i), 8+i, x)
 	}
+}
+
+func Show_256colors() {
+	fmt.Println("Standard colors")
+	for i := 0; i < 8; i++ {
+		fmt.Printf("%v%6v    %v", fc(i, true), i, x)
+	}
+	for i := 8; i < 16; i++ {
+		fmt.Printf("%v%v%6v    %v", fc(0, false), fc(i, true), i, x)
+	}
+	fmt.Println()
+
+	fmt.Println("216 colors")
+	for b := 16; b < 232; b += 36 {
+		for i := b; i < b+18; i++ {
+			fmt.Printf("%v%4v %v", fc(i, true), i, x)
+		}
+		for i := b + 18; i < b+36; i++ {
+			fmt.Printf("%v%v%4v %v", fc(0, false), fc(i, true), i, x)
+		}
+		fmt.Println()
+	}
+
+	fmt.Println("Grayscale colors")
+	for i := 232; i < 244; i++ {
+		fmt.Printf("%v  %v  %v", fc(i, true), i, x)
+	}
+	for i := 244; i < 256; i++ {
+		fmt.Printf("%v%v  %v  %v", fc(0, false), fc(i, true), i, x)
+	}
+	fmt.Println()
 }

@@ -25,7 +25,7 @@ func main() {
 	} else {
 		switch os.Args[1] {
 		case "help":
-			fmt.Println("tcolors [8c|256c|`file_name`]")
+			fmt.Println("tcolors [8c|256c|style|`file_name`]")
 		case "8colors", "8c":
 			colors.Show_8colors()
 		case "256colors", "256c":
@@ -38,6 +38,8 @@ func main() {
 			} else {
 				log.Println(err.Error())
 			}
+		case "style":
+			colors.Show_style()
 		case "--":
 			if file, err := os.Open(os.Args[2]); err == nil {
 				handle_file(file)

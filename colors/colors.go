@@ -55,3 +55,15 @@ func Show_256colors() {
 	}
 	fmt.Println()
 }
+
+func Show_style() {
+	fmt.Printf("\033[1mbold%v\n", x)
+	fmt.Printf("\033[2mdim%v\n", x)
+	fmt.Printf("\033[3mitalic%v\n", x)
+	fmt.Printf("\033[4munderline%v\n", x)
+	fmt.Printf("\033[5mslow blink%v\n", x)
+	fmt.Printf("\033[6mrapid blink%v\n", x)
+	fmt.Printf("\033[7mreverse%v\n", x)
+	fmt.Printf("\033[8mhide%v\n", x)
+	fmt.Printf("\033[9mcrossed-out%v\n", x)
+}
